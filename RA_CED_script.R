@@ -7,10 +7,14 @@ library(haven)
 library(tidyr)
 library(dplyr)
 
+
+
 #1) Sauvegarde des fichiers:
 
 ISSP_2022 = read_sav("~/5a/SQD/S1/Assistanat de recherche/RA_CED/data/ZA10000_v2-0-0.dta/ZA10000_v2-0-0.sav")
 ISSP_2012 = read_sav("~/5a/SQD/S1/Assistanat de recherche/RA_CED/data/ZA5900_v4-0-0.sav/ZA5900_v4-0-0.sav")
+
+
 
 #2) Nettoyage des données:
 
@@ -22,15 +26,34 @@ ISSP_2012_filtered <- ISSP_2012 %>%
   filter(C_ALPHAN == c("FR", "SE")) %>%
   mutate(year = 2012)
 
+
+
 #3) Fusion des jeux de données de 2012 et 2022
 
 #3.a: Comparaison des colonnes présentes en 2012 et 2022
 
-col2022 <- as.list(colnames(ISSP_2022))
-col2012 <- as.list(colnames(ISSP_2022))
+col2022 <- as.list(colnames(ISSP_2022)) # Crée une liste des colonnes présentes
+col2012 <- as.list(colnames(ISSP_2012)) 
 
+# Fonction identifiant les colomnes manquantes
+column_count <- function(liste_etudiee, liste_de_reference) { 
+    count <- 0 # Reset le compteur à 0
+    for (column in liste_etudiee) {
+        if (as.character(column) %in% liste_de_reference) {
+            next 
+            #Si la colonne de la liste étudiée est présente dans la liste de référence, 
+            #le code passe à la colonne suivante
+        } else {
+            print(column) # Ecrit la colonne manquante
+            count <- count + 1}} #Ajoute 1 au compteur de colonnes manquantes
+    print(paste("Nombre de colonnes manquantes : ", count)) } #Imprime un message
 
-  
+column_count(col2022, col2012) #Applique la fonction aux deux listes
+
+#En plus d'avoir 3 colonnes d'écart, la moitié sont écrites différemment : en
+#majuscules en 2012 et en minuscules en 2022
+
+#3.b: harmonization des colonnes 
 
 
 # >on va merger 2012 et 2022, France et Suède;
