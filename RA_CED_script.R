@@ -1,13 +1,37 @@
 # Installing packages 
 install.packages("haven")
+install.packages("tidyr")
 
 #Loading libraries
 library(haven)
+library(tidyr)
+library(dplyr)
 
-ISSP_2022 = read_sav("~/5a/SQD/S1/Assistanat de recherche/data/ZA10000_v2-0-0.dta/ZA10000_v2-0-0.sav")
-ISSP_2012 = read_sav("~/5a/SQD/S1/Assistanat de recherche/data/ZA5900_v4-0-0.sav/ZA5900_v4-0-0.sav")
+#1) Sauvegarde des fichiers:
 
-colnames(ISSP_2012)
+ISSP_2022 = read_sav("~/5a/SQD/S1/Assistanat de recherche/RA_CED/data/ZA10000_v2-0-0.dta/ZA10000_v2-0-0.sav")
+ISSP_2012 = read_sav("~/5a/SQD/S1/Assistanat de recherche/RA_CED/data/ZA5900_v4-0-0.sav/ZA5900_v4-0-0.sav")
+
+#2) Nettoyage des données:
+
+ISSP_2022_filtered <- ISSP_2022 %>%
+  filter(c_alphan == c("FR", "SE")) %>% #Conserve uniquement les données de la France (FR) et de la Suède (SE)
+  mutate(year = 2022) #Crée une nouvelle variable "year" pour le reste de l'analyse
+
+ISSP_2012_filtered <- ISSP_2012 %>%
+  filter(C_ALPHAN == c("FR", "SE")) %>%
+  mutate(year = 2012)
+
+#3) Fusion des jeux de données de 2012 et 2022
+
+#3.a: Comparaison des colonnes présentes en 2012 et 2022
+
+col2022 <- as.list(colnames(ISSP_2022))
+col2012 <- as.list(colnames(ISSP_2022))
+
+
+  
+
 
 # >on va merger 2012 et 2022, France et Suède;
 # >on devriat travailler sur le champ suivant : parents en couples hétérosexuels cohabitants;
