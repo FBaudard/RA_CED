@@ -55,19 +55,18 @@ column_count(col2022, col2012) #Applique la fonction aux deux listes
 
 #3.b: harmonization des colonnes 
 
+#Sélection des variables pertinentes
 
-# >on va merger 2012 et 2022, France et Suède;
-# >on devriat travailler sur le champ suivant : parents en couples hétérosexuels cohabitants;
-# >on devrait travailler sur les variables de temps domestique (housework) et de temps parental 
-# (ou "care") en tant que VD : il faudra faire un score comme celui-ci : la part du travail domestique 
-# et du travail parental (faire deux VD) faite par les hommes dans le couple 
-# (donc dans le couple faire H/H+F). Ce sera donc un score d'égalité domestique à l'échelle du couple 
-# et un score d'égalité parentale à l'échelle du couple
-# >on prendra les VI suivantes : pays, sexe du répondant, âge de la femme, âge de l'homme, 
-# niveau d'éducation de la femme (faire une variable avec seulement trois niveaux de diplômes), 
-# niveau d'éducation de l'homme, nombre/sexe des enfants
-# >on va faire une décomposition Oaxaca-Blinder 2012-2022 sur le score d'égalité domestique 
-# et d'égalité parentale avec toutes ces VI;
-# >on va faire des OLS sur les deux VD scores égalité dom et égalité par, 
-# trois modèles "hiérarchiques" ou "emboités" sur chaque VD : M1:Pays+Année, M2=M1+autres VI, 
-# M3=M2+interaction Pays x haut niveau de diplôme, M4=M2+interaction Année x haut niveau de diplôme.
+#Création d'une liste de variables à conserver pour 2012
+col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR", 
+                      "PARTLIV", "V66", "FR_DEGR", "SE_DEGR", "DEGREE", "V65", 
+                      "C_ALPHAN", "year")
+
+#R15a/b, R16a/b (heures), nat_ISCED, 
+#spouse_ISCED (R29), N30 (nb d’enfants), COUNTRY/C_ALPHAN (+ O31 si dispo)
+
+col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR", "c_alphan", "year")
+
+colnames(ISSP_2022_filtered)
+
+attributes(ISSP_2012_filtered$SE_DEGR)
