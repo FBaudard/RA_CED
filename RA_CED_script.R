@@ -30,6 +30,7 @@ ISSP_2012_filtered <- ISSP_2012 %>%
 
 #3) Fusion des jeux de données de 2012 et 2022
 
+
 #3.a: Comparaison des colonnes présentes en 2012 et 2022
 
 col2022 <- as.list(colnames(ISSP_2022)) # Crée une liste des colonnes présentes
@@ -53,7 +54,9 @@ column_count(col2022, col2012) #Applique la fonction aux deux listes
 #En plus d'avoir 3 colonnes d'écart, la moitié sont écrites différemment : en
 #majuscules en 2012 et en minuscules en 2022
 
+
 #3.b: harmonization des colonnes 
+
 
 #Sélection des variables pertinentes
 
@@ -62,11 +65,40 @@ col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR
                       "PARTLIV", "V66", "FR_DEGR", "SE_DEGR", "DEGREE", "V65", 
                       "C_ALPHAN", "year")
 
-#R15a/b, R16a/b (heures), nat_ISCED, 
-#spouse_ISCED (R29), N30 (nb d’enfants), COUNTRY/C_ALPHAN (+ O31 si dispo)
+#V37 = "Q16a How many hours spend on household work"
+#V38 = "Q16b How many hours spend on family members"
+#V39 = "Q17a How many hours spouse, partner works on household"
+#V40 = "Q17b How many hours spouse, partner spends on family members"
+#V66 = "Q33 Spouse, partner: Age"
 
-col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR", "c_alphan", "year")
+col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR", 
+                      "c_alphan", "year", "v34","v35", "v36", "v37", "v63", 
+                      "FR_ISCD", "SE_ISCD", "ISCED", "FR_SPISCD",
+                      "SE_SPISCD", "SPISCED", "SPEDULEV")
 
-colnames(ISSP_2022_filtered)
+#v34 = "Q15a How many hours spend on household work"
+#v35 = "Q15b How many hours spend on family members"
+#v36 = "Q16a How many hours spouse, partner works on household"
+#v37 = "Q16b How many hrs spouse, partner spends on family members"
+#v63 = "Q30 How many children have you ever had"
 
-attributes(ISSP_2012_filtered$SE_DEGR)
+#v64 = "O31a Provide care: child(ren) below school age"
+#v65 = "O31b Provide care: child(ren) of school age, up to 18"
+#v66 = "O31c Provide care: elderly person(s)"
+#v67 = "O31d Provide care: long term sick/disabled person(s)"
+#v68 = "O31e Provide care: other person(s)"
+
+
+#Sélection et harmonisation des colonnes
+
+ISSP_2012_cleaned <- ISSP_2012_filtered %>% #Crée un nouveau dataset
+  select(all_of(col_selected2012)) %>% # Conserve uniquement les variables sélectionnées
+  
+
+ISSP_2022_cleaned <- ISSP_2022_filtered %>%
+  select(all_of(col_selected2022))
+
+
+column_count(col_selected2012, col_selected2022)
+
+?rename
