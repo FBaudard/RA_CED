@@ -6,6 +6,7 @@ install.packages("tidyr")
 library(haven)
 library(tidyr)
 library(dplyr)
+library(readr)
 
 
 
@@ -62,7 +63,7 @@ column_count(col2022, col2012) #Applique la fonction aux deux listes
 
 #Création d'une liste de variables à conserver pour 2012
 col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR", 
-                      "PARTLIV", "V66", "FR_DEGR", "SE_DEGR", "DEGREE", "V65", 
+                      "PARTLIV", "V66", "DEGREE", "V65", 
                       "C_ALPHAN", "year")
 
 #V37 = "Q16a How many hours spend on household work"
@@ -72,9 +73,7 @@ col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR
 #V66 = "Q33 Spouse, partner: Age"
 
 col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR", 
-                      "c_alphan", "year", "v34","v35", "v36", "v37", "v63", 
-                      "FR_ISCD", "SE_ISCD", "ISCED", "FR_SPISCD",
-                      "SE_SPISCD", "SPISCED", "SPEDULEV")
+                      "c_alphan", "year", "v34","v35", "v36", "v37", "v63", "SPEDULEV")
 
 #v34 = "Q15a How many hours spend on household work"
 #v35 = "Q15b How many hours spend on family members"
@@ -93,12 +92,40 @@ col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR",
 
 ISSP_2012_cleaned <- ISSP_2012_filtered %>% #Crée un nouveau dataset
   select(all_of(col_selected2012)) %>% # Conserve uniquement les variables sélectionnées
-  
+  rename(HW = V37,               #HW signifie Household Work
+         FM = V38,               #FM signigie Family Members
+         SPHW = V39,             #SPHW signifie Spouse Household Work
+         SPFM = V40,             #SPFM signifie Spouse Family Members
+         SPAGE = V66,            #SPAGE signigie Spouse Age
+         country = C_ALPHAN,
+         SPEDULEV = V65) %>%
+  mutate(Q13 = NA) %>% #Création d'une colonne Q13 de NAs pour la fusion des datasets
+  mutate(across(where(is.labelled), zap_labels)) #Supprime les labels haven pour les variables 
 
 ISSP_2022_cleaned <- ISSP_2022_filtered %>%
-  select(all_of(col_selected2022))
+  select(all_of(col_selected2022)) %>%
+  rename(HW = v34,
+         FM = v35,
+         SPHW = v36,
+         SPFM = v37,
+         Q30 = v63,
+         country = c_alphan,
+         DEGREE = EDULEVEL) %>%
+  mutate(SPAGE = NA) %>% # Création d'une colonne SPAGE de NA pour la fusion des datasets
+  mutate(across(where(is.labelled), zap_labels))
 
+#3.c : Fusion des datasets
 
-column_count(col_selected2012, col_selected2022)
+col2022_cleaned <- as.list(colnames(ISSP_2022_cleaned)) # Crée une liste des colonnes présentes
+col2012_cleaned <- as.list(colnames(ISSP_2012_cleaned))
 
-?rename
+column_count(col2022_cleaned, col2012_cleaned) # Compare les colonnes présentes dans les deux datasets
+
+data <- bind_rows(ISSP_2012_cleaned, ISSP_2022_cleaned) #Fusionne les deux datasets
+
+#N = 3609
+
+#4) Sauvegarde des données 
+
+write_csv(data,                   #Télécharge data
+          "~/5a/SQD/S1/Assistanat de recherche/RA_CED/data/ISSP_data.csv") # Nomme le fichier et le Path
