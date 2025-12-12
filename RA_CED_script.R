@@ -64,7 +64,7 @@ column_count(col2022, col2012) #Applique la fonction aux deux listes
 #Création d'une liste de variables à conserver pour 2012
 col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR", 
                       "PARTLIV", "V66", "DEGREE", "V65", 
-                      "C_ALPHAN", "year", "HHCHILDR")
+                      "C_ALPHAN", "year", "HHCHILDR", "WEIGHT")
 
 #V37 = "Q16a How many hours spend on household work" 
 #V38 = "Q16b How many hours spend on family members"
@@ -74,7 +74,8 @@ col_selected2012 <- c("V37", "V38", "V39", "V40", "SEX", "AGE", "BIRTH", "DATEYR
 #HHCHILDR = "how many children"
 
 col_selected2022 <- c("EDULEVEL", "PARTLIV", "SEX", "AGE", "BIRTH", "DATEYR", 
-                      "c_alphan", "year", "v34","v35", "v36", "v37", "v63", "SPEDULEV")
+                      "c_alphan", "year", "v34","v35", "v36", "v37", "v63", 
+                      "SPEDULEV", "WEIGHT_COM")
 
 
 #v34 = "Q15a How many hours spend on household work"
@@ -114,7 +115,8 @@ ISSP_2022_cleaned <- ISSP_2022_filtered %>%
          SPFM = v37,
          CHILD = v63,
          country = c_alphan,
-         DEGREE = EDULEVEL) %>%
+         DEGREE = EDULEVEL,
+         WEIGHT = WEIGHT_COM) %>%
   mutate(SPAGE = NA, # Création d'une colonne SPAGE de NA pour la fusion des datasets
          DEGREE = case_when(
            DEGREE %in% c(5, 6) ~ 5, # Recode la variable degree selon le mode de DEGREE
@@ -132,6 +134,9 @@ column_count(col2012_cleaned, col2022_cleaned) # Compare les colonnes présentes
 data <- bind_rows(ISSP_2012_cleaned, ISSP_2022_cleaned) #Fusionne les deux datasets
 
 #N = 3609
+
+colnames_2012 <- colnames(ISSP_2012_filtered) #WEIGHT
+colnames_2022 <- colnames(ISSP_2022_filtered) #WEIGHT_COM
 
 
 
